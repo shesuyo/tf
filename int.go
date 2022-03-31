@@ -1,4 +1,4 @@
-package wtf
+package tf
 
 import (
 	"fmt"
@@ -30,6 +30,14 @@ func Int(v interface{}) int {
 		i, _ = strconv.Atoi(fmt.Sprintf("%v", v))
 	}
 	return i
+}
+
+// IntAbs intabs
+func IntAbs(a, b int) int {
+	if a > b {
+		return a - b
+	}
+	return b - a
 }
 
 // IntDivide 返回a/b的值
@@ -106,19 +114,18 @@ func IntsContain(a []int, b int) bool {
 	return false
 }
 
-// IntsContains a集合是否包含b集合
+// IntsContains a集合与b集合是否相交
 func IntsContains(a, b []int) bool {
-	m := make(map[int]struct{}, len(a))
+	m := make(map[int]bool, len(a))
 	for _, v := range a {
-		m[v] = struct{}{}
+		m[v] = true
 	}
 	for _, v := range b {
-		_, ok := m[v]
-		if !ok {
-			return false
+		if m[v] {
+			return true
 		}
 	}
-	return true
+	return false
 }
 
 // IntsContainsAny a集合是否包含b集合中任一元素
@@ -129,7 +136,7 @@ func IntsContainsAny(a, b []int) bool {
 	}
 	for _, v := range b {
 		_, ok := m[v]
-		if !ok {
+		if ok {
 			return true
 		}
 	}
@@ -180,15 +187,35 @@ func IntsIntersect(a, b []int) []int {
 	return want
 }
 
-// IntsUnique 除重，除重之后是乱序的。
+// IntsUnique 除重
 func IntsUnique(ids []int) []int {
-	idMap := make(map[int]bool, len(ids))
+	tagMap := make(map[int]bool, len(ids))
+	ret := make([]int, 0, len(ids))
 	for _, id := range ids {
-		idMap[id] = true
+		if !tagMap[id] {
+			tagMap[id] = true
+			ret = append(ret, id)
+		}
 	}
-	newIDs := []int{}
-	for k := range idMap {
-		newIDs = append(newIDs, k)
+	return ret
+}
+
+// FloatDecimal2 FloatDecimal2
+func FloatDecimal2(f float64) float64 {
+	var val float64
+	if f > 0 {
+		val = float64(int((f+0.005)*100)) / 100.0
+	} else {
+		val = float64(int((f-0.005)*100)) / 100.0
 	}
-	return newIDs
+	return val
+}
+
+func Float(s string) float64 {
+	f, _ := strconv.ParseFloat(s, 64)
+	return f
+}
+
+func Float2(s string) float64 {
+	return FloatDecimal2(Float(s))
 }
